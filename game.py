@@ -4,7 +4,7 @@ import time
 import pygame
 
 from spritesheet import Spritesheet
-from tilesheet import Tilesheet
+from tiles import Map
 import screen_effects as sfx
 
 
@@ -37,8 +37,6 @@ class Game:
         self.titleFont = pygame.font.Font('media/fonts/Retro Gaming.ttf', 45)
         self.cursor = '_'
 
-        # Map
-        self.tiles = Tilesheet('media/assets/tiles.png', w=64, h=64, rows=6, cols=6)
         # Welcoming Page
         self.timer = 0
         self.welcomeText = 'Press Space to Start'
@@ -63,14 +61,15 @@ class Game:
         self.window.fill(self.black)
 
     def menu_page(self, dt: float, player) -> None:
+        tiles = Map(self.window, 'menu')
         self.window.fill(self.black)
         sfx.blit_text(self, 'Menu', self.font, self.white, (self.W / 2, self.H / 2 - self.titleFont.get_height()))
         sfx.blit_text(self, 'Press Escape to Quit', self.font, self.white,
                       (self.W / 2, self.H / 2 + self.titleFont.get_height()))
-        self.tiles.draw(self.window)
+        player.move(dt, self.keys)
         player.blit_player(self.window)
 
-    def events(self, player):
+    def events(self, dt, player):
         for event in pygame.event.get():
             # Quit game
             if event.type == pygame.QUIT:
@@ -95,12 +94,3 @@ class Game:
                     self.keys[event.key] = True
                 elif event.type == pygame.KEYUP:
                     self.keys[event.key] = False
-                player.position += self.movement_input()
-
-    def movement_input(self):
-        movement = pygame.Vector2(0, 0)
-        if self.keys.get(pygame.K_a):
-            movement.x -= 4
-        if self.keys.get(pygame.K_d):
-            movement.x += 4
-        return movement
