@@ -46,19 +46,10 @@ def main():
         elif game.menu:
             game.menu_page(dt, player)
 
+        game.events(player)
         display.blit(window, (game.xShake, game.yShake))
         display_fps(game, dt)
         pygame.display.update()
-        for e in pygame.event.get():
-            if e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_ESCAPE:
-                    playing = False
-                if game.welcomePage and not game.transitionToMenu:
-                    if e.key == pygame.K_SPACE:
-                        sfx.initiate_shake(game, 30, game.W / 150)
-                        game.transitionToMenu = True
-            elif e.type == pygame.QUIT:
-                playing = False
     exit_game()
 
 

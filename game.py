@@ -1,8 +1,10 @@
 import random
+import sys
 import time
 import pygame
 
 from spritesheet import Spritesheet
+from tilesheet import Tilesheet
 import screen_effects as sfx
 
 
@@ -16,6 +18,7 @@ class Game:
         self.transitionToMenu = False
         self.menu = False
         self.playing = False
+        self.keys: dict = {}
 
         # Screen shaking
         self.screen_shake = False
@@ -34,6 +37,8 @@ class Game:
         self.titleFont = pygame.font.Font('media/fonts/Retro Gaming.ttf', 45)
         self.cursor = '_'
 
+        # Map
+        self.tiles = Tilesheet('media/assets/sheet.png', w=64, h=64, rows=6, cols=7)
         # Welcoming Page
         self.timer = 0
         self.welcomeText = 'Press Space to Start'
@@ -62,4 +67,40 @@ class Game:
         sfx.blit_text(self, 'Menu', self.font, self.white, (self.W / 2, self.H / 2 - self.titleFont.get_height()))
         sfx.blit_text(self, 'Press Escape to Quit', self.font, self.white,
                       (self.W / 2, self.H / 2 + self.titleFont.get_height()))
+        self.tiles.draw(self.window)
         player.blit_player(self.window)
+
+    def events(self, player):
+        for event in pygame.event.get():
+            # Quit game
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+            # Welcome Page
+            if self.welcomePage:
+                if event.type == pygame.KEYDOWN:
+                    if not self.transitionToMenu:
+                        if event.key == pygame.K_SPACE:
+                            sfx.initiate_shake(self, 30, self.W / 150)
+                            self.transitionToMenu = True
+
+            # Menu page
+            if self.menu:
+                if event.type == pygame.KEYDOWN:
+                    self.keys[event.key] = True
+                elif event.type == pygame.KEYUP:
+                    self.keys[event.key] = False
+                player.position += self.movement_input()
+
+    def movement_input(self):
+        movement = pygame.Vector2(0, 0)
+        if self.keys.get(pygame.K_a):
+            movement.x -= 4
+        if self.keys.get(pygame.K_d):
+            movement.x += 4
+        return movement
