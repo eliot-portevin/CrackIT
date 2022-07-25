@@ -38,7 +38,7 @@ class Game:
         self.cursor = '_'
 
         # Map
-        self.tiles = Tilesheet('media/assets/sheet.png', w=64, h=64, rows=6, cols=7)
+        self.tiles = Tilesheet('media/assets/tiles.png', w=64, h=64, rows=6, cols=6)
         # Welcoming Page
         self.timer = 0
         self.welcomeText = 'Press Space to Start'
