@@ -6,17 +6,17 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.window = window
         self.w, self.h = self.window.get_width(), self.window.get_height()
-        self.image = pygame.image.load('media/1 Biker/Biker_idle.png').convert()
+        self.image = pygame.image.load('media/Biker/idle.png').convert()
         self.player_w, self.player_h = self.image.get_size()
-        self.position = pygame.Vector2(0, 0)
-        self.rect = pygame.rect.Rect(self.position.x, self.position.y, self.player_w, self.player_h)
+        self.rect = pygame.rect.Rect(0, 0, self.player_w, self.player_h)
         self.speed = pygame.Vector2(0, 0)
         self.moving_left = False
         self.moving_right = False
         self.jumping = False
 
-    def blit_player(self, window):
-        self.window.blit(self.image, self.position)
+    def blit_player(self, spritesheet):
+        self.image = spritesheet.animate('idle')
+        self.window.blit(self.image, (self.rect.x, self.rect.y))
 
     def check_collisions(self, tiles):
         hit_list = []
@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
             self.speed.x = 0
         if keys.get(pygame.K_w) and not self.jumping:
             self.jumping = True
-            self.speed.y = -self.h/200
+            self.speed.y = -self.h / 200
         if self.speed.y < self.h / 70:
             self.speed.y += 0.2  # Gravity
 
@@ -63,6 +63,3 @@ class Player(pygame.sprite.Sprite):
             elif self.speed.y < 0:
                 self.rect.top = tile.bottom
                 collision_types['top'] = True
-
-        self.position.x = self.rect.left
-        self.position.y = self.rect.top

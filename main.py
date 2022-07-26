@@ -1,11 +1,11 @@
 import sys
 import time
+
 import pygame
 
+import screen_effects as sfx
 from game import Game
 from player import Player
-import screen_effects as sfx
-from tiles import Map
 
 pygame.init()
 display = pygame.display.set_mode((0, 0), pygame.SRCALPHA, pygame.FULLSCREEN)
@@ -48,7 +48,7 @@ def main():
         elif game.menu:
             game.menu_page(dt, player)
 
-        game.events(dt, player)
+        game.events()
         display.blit(window, (game.xShake, game.yShake))
         display_fps(game, dt)
         pygame.display.update()

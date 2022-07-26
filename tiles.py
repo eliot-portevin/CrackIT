@@ -1,5 +1,3 @@
-import time
-
 import pygame
 
 
@@ -53,5 +51,6 @@ class Map:
             y += 1
         return self.map, rects
 
-    def draw_map(self, window, map):
+    @staticmethod
+    def draw_map(window, map):
         window.blit(map, (0, 0))

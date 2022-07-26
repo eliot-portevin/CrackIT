@@ -1,11 +1,10 @@
-import random
 import sys
-import time
+
 import pygame
 
-from spritesheet import Spritesheet
-from tiles import Map
 import screen_effects as sfx
+from tiles import Map
+from spritesheet import Spritesheet
 
 
 class Game:
@@ -44,6 +43,7 @@ class Game:
         # Menu Page
         self.map = Map(self.window)
         self.menu_map, self.menu_rects = self.map.create_map('menu')
+        self.spritesheet = Spritesheet('Biker')
 
     def welcome_page(self, dt: float) -> None:
         self.timer += dt
@@ -61,7 +61,7 @@ class Game:
             self.welcomePage, self.transitionToMenu = False, False
             self.menu = True
 
-    def update(self, dt: float) -> None:
+    def update(self) -> None:
         self.window.fill(self.black)
 
     def menu_page(self, dt: float, player) -> None:
@@ -70,9 +70,9 @@ class Game:
         sfx.blit_text(self, 'Press Escape to Quit', self.font, self.white,
                       (self.W / 2, self.H / 2 + self.titleFont.get_height()))
         player.move(self.menu_rects, dt, self.keys)
-        player.blit_player(self.window)
+        player.blit_player(self.spritesheet)
 
-    def events(self, dt, player):
+    def events(self):
         for event in pygame.event.get():
             # Quit game
             if event.type == pygame.QUIT:
