@@ -31,6 +31,7 @@ def main():
     game = Game(display, window)
     player = Player(window)
     before = time.time()
+
     while playing:
         clock.tick(120)
         dt = (time.time() - before) * fps

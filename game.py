@@ -41,6 +41,10 @@ class Game:
         self.timer = 0
         self.welcomeText = 'Press Space to Start'
 
+        # Menu Page
+        self.map = Map(self.window)
+        self.menu_map, self.menu_rects = self.map.create_map('menu')
+
     def welcome_page(self, dt: float) -> None:
         self.timer += dt
         self.timer %= 60
@@ -61,12 +65,11 @@ class Game:
         self.window.fill(self.black)
 
     def menu_page(self, dt: float, player) -> None:
-        tiles = Map(self.window, 'menu')
-        self.window.fill(self.black)
+        self.map.draw_map(self.window, self.menu_map)
         sfx.blit_text(self, 'Menu', self.font, self.white, (self.W / 2, self.H / 2 - self.titleFont.get_height()))
         sfx.blit_text(self, 'Press Escape to Quit', self.font, self.white,
                       (self.W / 2, self.H / 2 + self.titleFont.get_height()))
-        player.move(dt, self.keys)
+        player.move(self.menu_rects, dt, self.keys)
         player.blit_player(self.window)
 
     def events(self, dt, player):
