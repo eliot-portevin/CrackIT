@@ -29,7 +29,8 @@ def main():
     playing = True
     fps = 60
     game = Game(display, window)
-    player = Player(window)
+    player = Player(window, game.menu_spawn)
+    print(game.menu_spawn)
     before = time.time()
 
     while playing:

@@ -2,13 +2,13 @@ import pygame
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, window: pygame.Surface):
+    def __init__(self, window: pygame.Surface, spawn: pygame.Vector2):
         super().__init__()
         self.window = window
         self.w, self.h = self.window.get_width(), self.window.get_height()
         self.image = pygame.image.load('media/Biker/idle.png').convert()
         self.player_w, self.player_h = 48, 48
-        self.rect = pygame.rect.Rect(self.w/2, self.h*2/3, self.player_w, self.player_h)
+        self.rect = pygame.rect.Rect(spawn.x, spawn.y, self.player_w, self.player_h)
         self.position = pygame.Vector2(self.rect.x, self.rect.y)
         self.speed = pygame.Vector2(0, 0)
         self.jumping = None
@@ -75,3 +75,5 @@ class Player(pygame.sprite.Sprite):
 
         self.position.x = self.rect.x
         self.position.y = self.rect.y
+
+        #print(self.position)
