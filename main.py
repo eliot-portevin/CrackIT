@@ -9,8 +9,7 @@ from player import Player
 
 pygame.init()
 display = pygame.display.set_mode((0, 0), pygame.SRCALPHA, pygame.FULLSCREEN)
-w, h = display.get_size()
-window = pygame.surface.Surface((w, h))
+window = display.copy()
 clock = pygame.time.Clock()
 
 
@@ -50,7 +49,7 @@ def main():
             game.menu_page(dt, player)
 
         game.events()
-        display.blit(pygame.transform.scale(window, display.get_size()), (game.xShake, game.yShake))
+        display.blit(window, (game.xShake, game.yShake))
         display_fps(game, dt)
         pygame.display.update()
     exit_game()

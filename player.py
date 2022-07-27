@@ -8,7 +8,8 @@ class Player(pygame.sprite.Sprite):
         self.w, self.h = self.window.get_width(), self.window.get_height()
         self.image = pygame.image.load('media/Biker/idle.png').convert()
         self.player_w, self.player_h = 48, 48
-        self.rect = pygame.rect.Rect(600, 400, self.player_w, self.player_h)
+        self.rect = pygame.rect.Rect(self.w/2, self.h*2/3, self.player_w, self.player_h)
+        self.position = pygame.Vector2(self.rect.x, self.rect.y)
         self.speed = pygame.Vector2(0, 0)
         self.jumping = None
         self.state = 'idle'  # Possible states: idle, run, jump, climb
@@ -38,9 +39,9 @@ class Player(pygame.sprite.Sprite):
         if keys.get(pygame.K_w) and not self.jumping:
             self.jumping = True
             self.state = 'jump'
-            self.speed.y = -self.h / 50
-        if self.speed.y < self.h / 70:
-            self.speed.y += 1  # Gravity
+            self.speed.y = - self.h / (200 * dt)
+        if self.speed.y < self.h / 100:
+            self.speed.y += 0.7 * dt  # Gravity
 
         # Collision checks
         collision_types = {'top': False,
@@ -68,3 +69,9 @@ class Player(pygame.sprite.Sprite):
                 collision_types['bottom'] = True
                 self.jumping = False
                 self.speed.y = 0
+
+        self.rect.x = round(self.rect.x)
+        self.rect.y = round(self.rect.y)
+
+        self.position.x = self.rect.x
+        self.position.y = self.rect.y
