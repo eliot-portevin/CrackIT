@@ -2,12 +2,12 @@ import pygame
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, window: pygame.Surface, spawn: pygame.Vector2):
+    def __init__(self, window: pygame.Surface, spawn: pygame.Vector2, tile_size):
         super().__init__()
         self.window = window
         self.w, self.h = self.window.get_width(), self.window.get_height()
-        self.image = pygame.image.load('media/Biker/idle.png').convert()
-        self.player_w, self.player_h = 48, 48
+        self.image = None
+        self.player_w, self.player_h = 2 * tile_size, 2 * tile_size
         self.rect = pygame.rect.Rect(spawn.x, spawn.y, self.player_w, self.player_h)
         self.position = pygame.Vector2(self.rect.x, self.rect.y)
         self.speed = pygame.Vector2(0, 0)
@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
 
     def blit_player(self, scroll: pygame.Vector2, spritesheet, dt):
         self.image = spritesheet.animate(self.state, dt)
-        self.window.blit(self.image, (self.rect.x - scroll.x, self.rect.y - scroll.y))
+        self.window.blit(self.image, (self.rect.x - scroll.x - self.rect.w/2, self.rect.y - scroll.y - self.rect.h))
 
     def check_collisions(self, tiles):
         hit_list = []

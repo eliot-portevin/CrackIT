@@ -43,7 +43,7 @@ class Game:
         # Menu Page
         self.map = Map(self.window)
         self.menu_map = self.map.create_map('menu')
-        self.spritesheet = Spritesheet('Biker')
+        self.spritesheet = Spritesheet('Biker', int(self.map.tile_size))
         self.menu_spawn = pygame.Vector2(self.map.map_size[0]/3*2, self.map.map_size[1]/3)*self.map.tile_size
 
     def welcome_page(self, dt: float) -> None:
@@ -69,7 +69,7 @@ class Game:
         self.window.fill(self.black)
         player.move(self.map.tile_rects, dt, self.keys)
         self.map.scroll_camera(player.position, player.rect)
-        self.map.draw_map(self.window)
+        self.map.draw_map(self.window, player.rect)
         player.blit_player(self.map.scroll, self.spritesheet, dt)
 
     def events(self):

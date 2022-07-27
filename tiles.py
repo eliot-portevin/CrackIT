@@ -15,7 +15,7 @@ class Map:
         self.map_size = [0, 0]
         self.tiles, self.temporary_list = [], []
         self.image = pygame.image.load('media/assets/tiles.png').convert()
-        self.image = pygame.transform.scale(self.image, (150, 150))
+        self.image = pygame.transform.scale(self.image, (int(self.w/4), int(self.w/4)))
         self.tile_size = self.image.get_width() / 6
         self.blocks = []  # Tile images stored as separate surfaces
         self.tile_rects = []  # Tile rectangles, updated each frame
@@ -66,5 +66,5 @@ class Map:
         if self.camera.top < player_rect.y < self.camera.bottom:
             self.scroll.y += (player_pos.y - self.scroll.y - self.h/2)/40
 
-    def draw_map(self, window: pygame.Surface):
-        window.blit(self.map, (-self.scroll.x, -self.scroll.y))
+    def draw_map(self, window: pygame.Surface, player_rect: pygame.rect.Rect):
+        window.blit(self.map, (-self.scroll.x - player_rect.w/2, -self.scroll.y - player_rect.h))

@@ -29,7 +29,7 @@ def exit_game():
 def main():
     playing = True
     game = Game(display, window)
-    player = Player(window, game.menu_spawn)
+    player = Player(window, game.menu_spawn, game.map.tile_size)
     before = time.time()
 
     while playing:
