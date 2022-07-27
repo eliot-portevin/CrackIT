@@ -14,7 +14,7 @@ class Map:
         self.map = None
         self.tiles, self.temporary_list = [], []
         self.image = pygame.image.load('media/assets/tiles.png').convert()
-        self.image = pygame.transform.scale(self.image, (120, 120))
+        self.image = pygame.transform.scale(self.image, (150, 150))
         self.tile_size = self.image.get_width() / 6
         self.blocks = []  # Tile images stored as separate surfaces
         self.tile_rects = []  # Tile rectangles, updated each frame

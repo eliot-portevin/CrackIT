@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
 
     def blit_player(self, scroll: pygame.Vector2, spritesheet, dt):
         self.image = spritesheet.animate(self.state, dt)
-        self.window.blit(self.image, (self.rect.x + scroll.x, self.rect.y + scroll.y))
+        self.window.blit(self.image, (self.rect.x - scroll.x, self.rect.y - scroll.y))
 
     def check_collisions(self, tiles):
         hit_list = []
