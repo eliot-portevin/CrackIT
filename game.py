@@ -42,7 +42,7 @@ class Game:
 
         # Menu Page
         self.map = Map(self.window)
-        self.menu_map, self.menu_rects = self.map.create_map('menu')
+        self.menu_map = self.map.create_map('menu')
         self.spritesheet = Spritesheet('Biker')
 
     def welcome_page(self, dt: float) -> None:
@@ -65,12 +65,12 @@ class Game:
         self.window.fill(self.black)
 
     def menu_page(self, dt: float, player) -> None:
-        self.map.draw_map(self.window, self.menu_map)
+        self.map.draw_map(self.window, player.rect, player.speed)
         sfx.blit_text(self, 'Menu', self.font, self.white, (self.W / 2, self.H / 2 - self.titleFont.get_height()))
         sfx.blit_text(self, 'Press Escape to Quit', self.font, self.white,
                       (self.W / 2, self.H / 2 + self.titleFont.get_height()))
-        player.move(self.menu_rects, dt, self.keys)
-        player.blit_player(self.spritesheet)
+        player.move(self.map.tile_rects, dt, self.keys)
+        player.blit_player(self.map.scroll, self.spritesheet, dt)
 
     def events(self):
         for event in pygame.event.get():

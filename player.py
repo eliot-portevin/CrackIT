@@ -7,16 +7,15 @@ class Player(pygame.sprite.Sprite):
         self.window = window
         self.w, self.h = self.window.get_width(), self.window.get_height()
         self.image = pygame.image.load('media/Biker/idle.png').convert()
-        self.player_w, self.player_h = self.image.get_size()
-        self.rect = pygame.rect.Rect(0, 0, self.player_w, self.player_h)
+        self.player_w, self.player_h = 48, 48
+        self.rect = pygame.rect.Rect(600, 400, self.player_w, self.player_h)
         self.speed = pygame.Vector2(0, 0)
-        self.moving_left = False
-        self.moving_right = False
-        self.jumping = False
+        self.jumping = None
+        self.state = 'idle'  # Possible states: idle, run, jump, climb
 
-    def blit_player(self, spritesheet):
-        self.image = spritesheet.animate('idle')
-        self.window.blit(self.image, (self.rect.x, self.rect.y))
+    def blit_player(self, scroll: pygame.Vector2, spritesheet, dt):
+        self.image = spritesheet.animate(self.state, dt)
+        self.window.blit(self.image, (self.rect.x + scroll.x, self.rect.y + scroll.y))
 
     def check_collisions(self, tiles):
         hit_list = []
@@ -28,16 +27,20 @@ class Player(pygame.sprite.Sprite):
     def move(self, tile_rects, dt, keys):
         # Key input
         if keys.get(pygame.K_a):
-            self.speed.x = -self.w / 200 * dt
+            self.speed.x = -self.w / 300 * dt
+            self.state = 'run_left'
         elif keys.get(pygame.K_d):
-            self.speed.x = self.w / 200 * dt
+            self.speed.x = self.w / 300 * dt
+            self.state = 'run_right'
         else:
             self.speed.x = 0
+            self.state = 'idle'
         if keys.get(pygame.K_w) and not self.jumping:
             self.jumping = True
-            self.speed.y = -self.h / 200
+            self.state = 'jump'
+            self.speed.y = -self.h / 50
         if self.speed.y < self.h / 70:
-            self.speed.y += 0.2  # Gravity
+            self.speed.y += 1  # Gravity
 
         # Collision checks
         collision_types = {'top': False,
@@ -53,13 +56,15 @@ class Player(pygame.sprite.Sprite):
             elif self.speed.x < 0:
                 self.rect.left = tile.right
                 collision_types['left'] = True
+            self.speed.x = 0
         self.rect.y += self.speed.y
         hit_list = self.check_collisions(tile_rects)
         for tile in hit_list:
-            if self.speed.y > 0:
+            if self.speed.y < 0:
+                self.rect.top = tile.bottom
+                collision_types['top'] = True
+            elif self.speed.y > 0:
                 self.rect.bottom = tile.top
                 collision_types['bottom'] = True
                 self.jumping = False
-            elif self.speed.y < 0:
-                self.rect.top = tile.bottom
-                collision_types['top'] = True
+                self.speed.y = 0

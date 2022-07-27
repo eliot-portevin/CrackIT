@@ -5,15 +5,15 @@ class Spritesheet:
     def __init__(self, character):
         # Single image size: 48*48
         self.number_of_frames = 4
-        self.path = f'media/{character}/'
         self.animations = {'idle': [],
-                           'run': [],
+                           'run_left': [],
+                           'run_right': [],
                            'jump': [],
-                           'fall': []}
+                           'climb': []}
 
         for animation in self.animations.keys():
-            print(f'{self.path}{animation}.png')
-            img = pygame.image.load(f'{self.path}{animation}.png')
+            path = f'media/{character}/{animation}.png'
+            img = pygame.image.load(path).convert()
             imgs = []
             for x in range(0, self.number_of_frames):
                 rect = pygame.rect.Rect(x * 48, 0, 48, 48)
