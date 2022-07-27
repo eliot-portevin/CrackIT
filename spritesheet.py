@@ -21,7 +21,7 @@ class Spritesheet:
             self.animations[animation] = imgs
 
         self.frame_idx = 0
-        self.animation_speed = 1 / self.number_of_frames
+        self.animation_speed = 0.1
 
     def animate(self, state, dt):
         animation = self.animations[state]

@@ -11,10 +11,11 @@ pygame.init()
 display = pygame.display.set_mode((0, 0), pygame.SRCALPHA, pygame.FULLSCREEN)
 window = display.copy()
 clock = pygame.time.Clock()
+fps = 120
 
 
 def display_fps(game, dt):
-    fps_text = game.font.render(str(round(60 / dt)), False, game.white)
+    fps_text = game.font.render(str(round(fps / dt)), False, game.white)
     display.blit(fps_text, (0, 0))
     pygame.display.update(fps_text.get_rect())
 
@@ -27,14 +28,12 @@ def exit_game():
 
 def main():
     playing = True
-    fps = 60
     game = Game(display, window)
     player = Player(window, game.menu_spawn)
-    print(game.menu_spawn)
     before = time.time()
 
     while playing:
-        clock.tick(120)
+        clock.tick(fps)
         dt = (time.time() - before) * fps
         before = time.time()
         dt = round(dt, 4)

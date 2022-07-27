@@ -39,7 +39,7 @@ class Player(pygame.sprite.Sprite):
         if keys.get(pygame.K_w) and not self.jumping:
             self.jumping = True
             self.state = 'jump'
-            self.speed.y = - self.h / (200 * dt)
+            self.speed.y = - self.h / 70 * dt
         if self.speed.y < self.h / 100:
             self.speed.y += 0.7 * dt  # Gravity
 
