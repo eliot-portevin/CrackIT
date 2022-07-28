@@ -71,7 +71,6 @@ class Game:
         self.window.fill(self.black)
         player.move(self.map.get_neighbour_tiles, dt, self.keys)
         self.map.scroll_camera(player.position, player.rect)
-        neighbours = self.map.get_neighbour_tiles(player.position)
         self.map.draw_map(self.window, player.rect)
         player.blit_player(self.map.scroll, self.spritesheet, dt)
 

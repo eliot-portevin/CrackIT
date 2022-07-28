@@ -49,12 +49,14 @@ class Map:
             tmp = []
             x = 0
             for tile in row:
-                x_position = x * self.tile_size
-                y_position = y * self.tile_size
-                rect = pygame.rect.Rect(x_position, y_position, self.tile_size, self.tile_size)
                 if tile != -1:
+                    x_position = x * self.tile_size
+                    y_position = y * self.tile_size
+                    rect = pygame.rect.Rect(x_position, y_position, self.tile_size, self.tile_size)
                     self.map.blit(self.blocks[tile], (x_position, y_position))
-                tmp.append(rect)
+                    tmp.append(rect)
+                else:
+                    tmp.append(None)
                 x += 1
             self.tile_rects.append(tmp)
             y += 1
@@ -73,11 +75,12 @@ class Map:
 
     def get_neighbour_tiles(self, pos: pygame.Vector2):
         neighbours = []
-        for x_nr in range(0, 5):
-            for y_nr in range(0, 5):
-                y_idx, x_idx = self.get_tile_index(pos + pygame.Vector2((x_nr-2) * self.tile_size, (y_nr-2) * self.tile_size))
+        for x_nr in range(0, 8):
+            for y_nr in range(0, 8):
+                y_idx, x_idx = self.get_tile_index(pos + pygame.Vector2((x_nr-3) * self.tile_size, (y_nr-3) * self.tile_size))
                 if self.tiles[x_idx][y_idx] != -1:
                     neighbours.append(self.tile_rects[x_idx][y_idx])
+
         return neighbours
 
     def get_tile_index(self, pos: pygame.Vector2):
