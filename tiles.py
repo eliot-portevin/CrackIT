@@ -46,15 +46,17 @@ class Map:
         self.map = pygame.surface.Surface((self.map_size[0] * self.tile_size, self.map_size[1] * self.tile_size))
         y = 0
         for row in self.tiles:
+            tmp = []
             x = 0
             for tile in row:
+                x_position = x * self.tile_size
+                y_position = y * self.tile_size
+                rect = pygame.rect.Rect(x_position, y_position, self.tile_size, self.tile_size)
                 if tile != -1:
-                    x_position = x * self.tile_size
-                    y_position = y * self.tile_size
-                    rect = pygame.rect.Rect(x_position, y_position, self.tile_size, self.tile_size)
                     self.map.blit(self.blocks[tile], (x_position, y_position))
-                    self.tile_rects.append(rect)
+                tmp.append(rect)
                 x += 1
+            self.tile_rects.append(tmp)
             y += 1
         map_w, map_h = self.map.get_size()
         self.camera = pygame.rect.Rect(0, 0, map_w - self.w, map_h - self.h)
@@ -68,3 +70,17 @@ class Map:
 
     def draw_map(self, window: pygame.Surface, player_rect: pygame.rect.Rect):
         window.blit(self.map, (-self.scroll.x - player_rect.w/2, -self.scroll.y - player_rect.h))
+
+    def get_neighbour_tiles(self, pos: pygame.Vector2):
+        neighbours = []
+        for x_nr in range(0, 5):
+            for y_nr in range(0, 5):
+                y_idx, x_idx = self.get_tile_index(pos + pygame.Vector2((x_nr-2) * self.tile_size, (y_nr-2) * self.tile_size))
+                if self.tiles[x_idx][y_idx] != -1:
+                    neighbours.append(self.tile_rects[x_idx][y_idx])
+        return neighbours
+
+    def get_tile_index(self, pos: pygame.Vector2):
+        x = int(pos.x / self.tile_size)
+        y = int(pos.y / self.tile_size)
+        return x, y

@@ -18,14 +18,15 @@ class Player(pygame.sprite.Sprite):
         self.image = spritesheet.animate(self.state, dt)
         self.window.blit(self.image, (self.rect.x - scroll.x - self.rect.w/2, self.rect.y - scroll.y - self.rect.h))
 
-    def check_collisions(self, tiles):
+    def check_collisions(self, get_neighbour_tiles: classmethod):
+        neighbours = get_neighbour_tiles(self.position)
         hit_list = []
-        for tile in tiles:
+        for tile in neighbours:
             if self.rect.colliderect(tile):
                 hit_list.append(tile)
         return hit_list
 
-    def move(self, tile_rects, dt, keys):
+    def move(self, get_neighbour_tiles, dt, keys):
         # Key input
         if keys.get(pygame.K_a):
             self.speed.x = -self.w / 300 * dt
@@ -49,7 +50,7 @@ class Player(pygame.sprite.Sprite):
                            'right': False,
                            'left': False}
         self.rect.x += self.speed.x
-        hit_list = self.check_collisions(tile_rects)
+        hit_list = self.check_collisions(get_neighbour_tiles)
         for tile in hit_list:
             if self.speed.x > 0:
                 self.rect.right = tile.left
@@ -59,7 +60,7 @@ class Player(pygame.sprite.Sprite):
                 collision_types['left'] = True
             self.speed.x = 0
         self.rect.y += self.speed.y
-        hit_list = self.check_collisions(tile_rects)
+        hit_list = self.check_collisions(get_neighbour_tiles)
         for tile in hit_list:
             if self.speed.y < 0:
                 self.rect.top = tile.bottom
@@ -75,5 +76,3 @@ class Player(pygame.sprite.Sprite):
 
         self.position.x = self.rect.x
         self.position.y = self.rect.y
-
-        #print(self.position)
