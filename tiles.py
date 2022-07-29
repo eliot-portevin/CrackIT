@@ -23,8 +23,8 @@ class Map:
         self.camera = None
 
         # Converting sprite-sheet into blocks
-        for tile_x in range(0, 6):
-            for tile_y in range(0, 6):
+        for tile_y in range(0, 6):
+            for tile_x in range(0, 6):
                 rect = (tile_x * self.tile_size, tile_y * self.tile_size,
                         self.tile_size, self.tile_size)
                 self.blocks.append(self.image.subsurface(rect))
@@ -50,6 +50,7 @@ class Map:
             x = 0
             for tile in row:
                 if tile != -1:
+                    print(tile)
                     x_position = x * self.tile_size
                     y_position = y * self.tile_size
                     rect = pygame.rect.Rect(x_position, y_position, self.tile_size, self.tile_size)
@@ -75,13 +76,15 @@ class Map:
 
     def get_neighbour_tiles(self, pos: pygame.Vector2):
         neighbours = []
+        tile_types = []
         for x_nr in range(0, 8):
             for y_nr in range(0, 8):
                 y_idx, x_idx = self.get_tile_index(pos + pygame.Vector2((x_nr-3) * self.tile_size, (y_nr-3) * self.tile_size))
                 if self.tiles[x_idx][y_idx] != -1:
                     neighbours.append(self.tile_rects[x_idx][y_idx])
+                    tile_types.append(self.tiles[x_idx][y_idx])
 
-        return neighbours
+        return neighbours, tile_types
 
     def get_tile_index(self, pos: pygame.Vector2):
         x = int(pos.x / self.tile_size)
