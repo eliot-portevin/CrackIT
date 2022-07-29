@@ -73,16 +73,21 @@ class Map:
     def draw_map(self, window: pygame.Surface, player_rect: pygame.rect.Rect):
         window.blit(self.map, (-self.scroll.x - player_rect.w/2, -self.scroll.y - player_rect.h))
 
-    def get_neighbour_tiles(self, pos: pygame.Vector2):
+    def get_neighbour_tiles(self, pos: pygame.Vector2, ramps: bool):
         neighbours = []
         tile_types = []
+        ramp_nrs = [0, 1]
         for x_nr in range(0, 8):
             for y_nr in range(0, 8):
                 y_idx, x_idx = self.get_tile_index(pos + pygame.Vector2((x_nr-3) * self.tile_size, (y_nr-3) * self.tile_size))
                 if self.tiles[x_idx][y_idx] != -1:
-                    neighbours.append(self.tile_rects[x_idx][y_idx])
-                    tile_types.append(self.tiles[x_idx][y_idx])
-
+                    if ramps: # Find neighbour ramps for collision check
+                        if self.tiles[x_idx][y_idx] in ramp_nrs:
+                            neighbours.append(self.tile_rects[x_idx][y_idx])
+                            tile_types.append(self.tiles[x_idx][y_idx])
+                    elif self.tiles[x_idx][y_idx] not in ramp_nrs:
+                        neighbours.append(self.tile_rects[x_idx][y_idx])
+                        tile_types.append(self.tiles[x_idx][y_idx])
         return neighbours, tile_types
 
     def get_tile_index(self, pos: pygame.Vector2):

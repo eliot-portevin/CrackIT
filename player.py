@@ -28,10 +28,12 @@ class Player(pygame.sprite.Sprite):
     def move(self, get_neighbour_tiles: classmethod, dt, keys):
         # Key input
         if keys.get(pygame.K_a):
-            self.speed.x = -self.w / 300 * dt
+            self.speed.x = -2
+            #self.speed.x = -self.w / 300 * dt
             self.state = 'run_left'
         elif keys.get(pygame.K_d):
-            self.speed.x = self.w / 300 * dt
+            self.speed.x = 2
+            #self.speed.x = self.w / 300 * dt
             self.state = 'run_right'
         else:
             self.speed.x = 0
@@ -44,50 +46,57 @@ class Player(pygame.sprite.Sprite):
             self.speed.y += 0.7 * dt  # Gravity
 
         # Collision checks
-        neighbour_tiles, tile_types = get_neighbour_tiles(self.position)
-        ramp_numbers = [0, 1]
+        neighbour_tiles, tile_types = get_neighbour_tiles(self.position, ramps=False)
         collision_types = {'top': False,
                            'bottom': False,
                            'right': False,
                            'left': False}
 
-        self.rect.y += self.speed.y
-        hit_list = self.check_collisions(neighbour_tiles, tile_types)
-        for tile in hit_list:
-            if not tile[1] in ramp_numbers:
-                if self.speed.y < 0:
-                    self.rect.top = tile[0].bottom
-                    collision_types['top'] = True
-                elif self.speed.y > 0:
-                    self.rect.bottom = tile[0].top
-                    collision_types['bottom'] = True
-                    self.jumping = False
-                    self.speed.y = 0
-
         self.rect.x += self.speed.x
         hit_list = self.check_collisions(neighbour_tiles, tile_types)
         for tile in hit_list:
-            if not tile[1] in ramp_numbers:
-                if self.speed.x > 0:
-                    self.rect.right = tile[0].left
-                    collision_types['right'] = True
-                elif self.speed.x < 0:
-                    self.rect.left = tile[0].right
-                    collision_types['left'] = True
-                self.speed.x = 0
-            else:
-                rel_x = self.rect.x - tile[0].x
-                pos_height = rel_x + self.rect.width  # go by player right edge on right ramps
-                if tile[1] == 1:
-                    pos_height = tile[0].w - rel_x  # is already left edge by default
+            if self.speed.x > 0:
+                self.rect.right = tile[0].left
+                collision_types['right'] = True
+            elif self.speed.x < 0:
+                self.rect.left = tile[0].right
+                collision_types['left'] = True
+            self.speed.x = 0
+
+        self.rect.y += self.speed.y
+        hit_list = self.check_collisions(neighbour_tiles, tile_types)
+        for tile in hit_list:
+            if self.speed.y < 0:
+                self.rect.top = tile[0].bottom
+                collision_types['top'] = True
+            elif self.speed.y > 0:
+                self.rect.bottom = tile[0].top
+                collision_types['bottom'] = True
+                self.speed.y = 0
+
+        neighbour_ramps, tile_types = get_neighbour_tiles(self.position, ramps=True)
+        ramps = self.check_collisions(neighbour_ramps, tile_types)
+        for ramp in ramps:
+            if self.rect.colliderect(ramp[0]):
+                rel_x = self.rect.x - ramp[0].x
+                pos_height = 0
+                if ramp[1] == 0:
+                    pos_height = rel_x + self.rect.width  # go by player right edge on right ramps
+                if ramp[1] == 1:
+                    pos_height = ramp[0].w - rel_x  # is already left edge by default
 
                 # add constraints
-                pos_height = min(pos_height, tile[0].w)
+                pos_height = min(pos_height, ramp[0].w)
                 pos_height = max(pos_height, 0)
-                target_y = tile[0].y + tile[0].w - pos_height
+                target_y = ramp[0].y + ramp[0].w - pos_height
 
                 self.rect.bottom = target_y
+                self.speed.y = self.speed.x
                 collision_types['bottom'] = True
+
+        if collision_types['bottom']:
+            self.jumping = False
+            self.speed.y = 0
 
         self.rect.x = round(self.rect.x)
         self.rect.y = round(self.rect.y)
