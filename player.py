@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite):
 
     def move(self, get_neighbour_tiles: classmethod, dt, keys):
         # Key input
+        jumping_attempt = False
         if keys.get(pygame.K_a):
             self.speed.x = -2
             #self.speed.x = -self.w / 300 * dt
@@ -38,15 +39,17 @@ class Player(pygame.sprite.Sprite):
         else:
             self.speed.x = 0
             self.state = 'idle'
-        if keys.get(pygame.K_w) and not self.jumping:
-            self.jumping = True
-            self.state = 'jump'
-            self.speed.y = - self.h / 70 * dt
+        if keys.get(pygame.K_w):
+            jumping_attempt = True
+            if not self.jumping:
+                self.jumping = True
+                self.state = 'jump'
+                self.speed.y = - self.h / 70 * dt
         if self.speed.y < self.h / 100:
             self.speed.y += 0.7 * dt  # Gravity
 
         # Collision checks
-        neighbour_tiles, tile_types = get_neighbour_tiles(self.position, ramps=False)
+        neighbour_tiles, tile_types = get_neighbour_tiles(self.position, ramps=False)  # Get neighbour tiles that aren't ramps
         collision_types = {'top': False,
                            'bottom': False,
                            'right': False,
@@ -72,12 +75,11 @@ class Player(pygame.sprite.Sprite):
             elif self.speed.y > 0:
                 self.rect.bottom = tile[0].top
                 collision_types['bottom'] = True
-                self.speed.y = 0
 
-        neighbour_ramps, tile_types = get_neighbour_tiles(self.position, ramps=True)
+        neighbour_ramps, tile_types = get_neighbour_tiles(self.position, ramps=True)  # Get neighbour ramps
         ramps = self.check_collisions(neighbour_ramps, tile_types)
         for ramp in ramps:
-            if self.rect.colliderect(ramp[0]):
+            if self.rect.colliderect(ramp[0]) and not jumping_attempt:  # If player on ramp
                 rel_x = self.rect.x - ramp[0].x
                 pos_height = 0
                 if ramp[1] == 0:
@@ -91,7 +93,7 @@ class Player(pygame.sprite.Sprite):
                 target_y = ramp[0].y + ramp[0].w - pos_height
 
                 self.rect.bottom = target_y
-                self.speed.y = self.speed.x
+                self.speed.y = self.speed.x  # To avoid player getting stuck at top of ramp
                 collision_types['bottom'] = True
 
         if collision_types['bottom']:
