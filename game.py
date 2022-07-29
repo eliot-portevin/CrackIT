@@ -44,8 +44,8 @@ class Game:
         self.map = Map(self.window)
         self.menu_map = self.map.create_map('menu')
         self.spritesheet = Spritesheet('Biker', int(self.map.tile_size))
-        self.menu_spawn = pygame.Vector2(self.map.map_size[0] / 3 * 2,
-                                         self.map.map_size[1] / 3 * 2) * self.map.tile_size
+        self.menu_spawn = pygame.Vector2(self.map.map_size[0] / 2,
+                                         self.map.map_size[1] / 2) * self.map.tile_size
         self.map.scroll = self.menu_spawn
 
     def welcome_page(self, dt: float) -> None:

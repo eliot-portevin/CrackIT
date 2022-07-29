@@ -50,7 +50,6 @@ class Map:
             x = 0
             for tile in row:
                 if tile != -1:
-                    print(tile)
                     x_position = x * self.tile_size
                     y_position = y * self.tile_size
                     rect = pygame.rect.Rect(x_position, y_position, self.tile_size, self.tile_size)

@@ -20,7 +20,6 @@ class Player(pygame.sprite.Sprite):
 
     def check_collisions(self, neighbour_tiles, tile_types):
         hit_list = []
-        print(type(neighbour_tiles))
         for idx, tile in enumerate(neighbour_tiles):
             if self.rect.colliderect(tile):
                 hit_list.append([tile, tile_types[idx]])
@@ -46,23 +45,12 @@ class Player(pygame.sprite.Sprite):
 
         # Collision checks
         neighbour_tiles, tile_types = get_neighbour_tiles(self.position)
-        ramp_numbers = ['0', '1']
+        ramp_numbers = [0, 1]
         collision_types = {'top': False,
                            'bottom': False,
                            'right': False,
                            'left': False}
 
-        self.rect.x += self.speed.x
-        hit_list = self.check_collisions(neighbour_tiles, tile_types)
-        for tile in hit_list:
-            if not tile[1] in ramp_numbers:
-                if self.speed.x > 0:
-                    self.rect.right = tile[0].left
-                    collision_types['right'] = True
-                elif self.speed.x < 0:
-                    self.rect.left = tile[0].right
-                    collision_types['left'] = True
-                self.speed.x = 0
         self.rect.y += self.speed.y
         hit_list = self.check_collisions(neighbour_tiles, tile_types)
         for tile in hit_list:
@@ -76,25 +64,31 @@ class Player(pygame.sprite.Sprite):
                     self.jumping = False
                     self.speed.y = 0
 
-        ramps = self.check_collisions(get_neighbour_tiles, tile_types)
-        for idx, ramp in enumerate(ramps):
-            if ramp[1] in ramp_numbers:
-                rel_x = self.rect.x - ramp.x
-                if ramp[1] == '0':
-                    pos_height = rel_x + self.rect.width  # go by player right edge on right ramps
-                elif ramp[1] == '1':
-                    pos_height = ramp.w - rel_x  # is already left edge by default
+        self.rect.x += self.speed.x
+        hit_list = self.check_collisions(neighbour_tiles, tile_types)
+        for tile in hit_list:
+            if not tile[1] in ramp_numbers:
+                if self.speed.x > 0:
+                    self.rect.right = tile[0].left
+                    collision_types['right'] = True
+                elif self.speed.x < 0:
+                    self.rect.left = tile[0].right
+                    collision_types['left'] = True
+                self.speed.x = 0
+            else:
+                rel_x = self.rect.x - tile[0].x
+                pos_height = rel_x + self.rect.width  # go by player right edge on right ramps
+                if tile[1] == 1:
+                    pos_height = tile[0].w - rel_x  # is already left edge by default
 
                 # add constraints
-                pos_height = min(pos_height, ramp.w)
+                pos_height = min(pos_height, tile[0].w)
                 pos_height = max(pos_height, 0)
-                target_y = ramp.y + ramp.w - pos_height
+                target_y = tile[0].y + tile[0].w - pos_height
 
-                if self.rect.bottom > target_y:  # check if the player collided with the actual ramp
-                    # adjust player height
-                    self.rect.bottom = target_y
+                self.rect.bottom = target_y
+                collision_types['bottom'] = True
 
-                    collision_types['bottom'] = True
         self.rect.x = round(self.rect.x)
         self.rect.y = round(self.rect.y)
 
