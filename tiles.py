@@ -14,17 +14,17 @@ class Map:
         self.map = None
         self.map_size = [0, 0]
         self.tiles, self.temporary_list = [], []
-        self.image = pygame.image.load('media/assets/tiles.png').convert()
-        self.image = pygame.transform.scale(self.image, (int(self.w/4), int(self.w/4)))
-        self.tile_size = self.image.get_width() / 6
+        self.image = pygame.image.load('media/assets/tiles.png')
+        self.image = pygame.transform.scale(self.image, (int(self.w/6), int(self.w/6))).convert()
+        self.tile_size = self.image.get_width() / 4
         self.blocks = []  # Tile images stored as separate surfaces
         self.tile_rects = []  # Tile rectangles, updated each frame
         self.scroll = pygame.Vector2(self.w/2, self.h/2)
         self.camera = None
 
         # Converting sprite-sheet into blocks
-        for tile_y in range(0, 6):
-            for tile_x in range(0, 6):
+        for tile_y in range(0, 4):
+            for tile_x in range(0, 4):
                 rect = (tile_x * self.tile_size, tile_y * self.tile_size,
                         self.tile_size, self.tile_size)
                 self.blocks.append(self.image.subsurface(rect))
@@ -76,7 +76,7 @@ class Map:
     def get_neighbour_tiles(self, pos: pygame.Vector2, ramps: bool):
         neighbours = []
         tile_types = []
-        ramp_nrs = [0, 1]
+        ramp_nrs = [12, 13]
         for x_nr in range(0, 8):
             for y_nr in range(0, 8):
                 y_idx, x_idx = self.get_tile_index(pos + pygame.Vector2((x_nr-3) * self.tile_size, (y_nr-3) * self.tile_size))

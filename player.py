@@ -78,13 +78,14 @@ class Player(pygame.sprite.Sprite):
 
         neighbour_ramps, tile_types = get_neighbour_tiles(self.position, ramps=True)  # Get neighbour ramps
         ramps = self.check_collisions(neighbour_ramps, tile_types)
+        print(ramps)
         for ramp in ramps:
             if self.rect.colliderect(ramp[0]) and not jumping_attempt:  # If player on ramp
                 rel_x = self.rect.x - ramp[0].x
                 pos_height = 0
-                if ramp[1] == 0:
+                if ramp[1] == 12:
                     pos_height = rel_x + self.rect.width  # go by player right edge on right ramps
-                if ramp[1] == 1:
+                if ramp[1] == 13:
                     pos_height = ramp[0].w - rel_x  # is already left edge by default
 
                 # add constraints
