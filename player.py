@@ -13,6 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = pygame.Vector2(0, 0)
         self.jumping = None
         self.state = 'idle'  # Possible states: idle, run, jump, climb
+        self.mask = None
 
     def blit_player(self, scroll: pygame.Vector2, spritesheet, dt):
         self.image = spritesheet.animate(self.state, dt)
@@ -29,12 +30,10 @@ class Player(pygame.sprite.Sprite):
         # Key input
         jumping_attempt = False
         if keys.get(pygame.K_a):
-            self.speed.x = -2
-            #self.speed.x = -self.w / 300 * dt
+            self.speed.x = -self.w / 300 * dt
             self.state = 'run_left'
         elif keys.get(pygame.K_d):
-            self.speed.x = 2
-            #self.speed.x = self.w / 300 * dt
+            self.speed.x = self.w / 300 * dt
             self.state = 'run_right'
         else:
             self.speed.x = 0
@@ -78,7 +77,6 @@ class Player(pygame.sprite.Sprite):
 
         neighbour_ramps, tile_types = get_neighbour_tiles(self.position, ramps=True)  # Get neighbour ramps
         ramps = self.check_collisions(neighbour_ramps, tile_types)
-        print(ramps)
         for ramp in ramps:
             if self.rect.colliderect(ramp[0]) and not jumping_attempt:  # If player on ramp
                 rel_x = self.rect.x - ramp[0].x

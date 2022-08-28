@@ -21,6 +21,7 @@ class Map:
         self.tile_rects = []  # Tile rectangles, updated each frame
         self.scroll = pygame.Vector2(self.w/2, self.h/2)
         self.camera = None
+        self.mask = None
 
         # Converting sprite-sheet into blocks
         for tile_y in range(0, 4):
